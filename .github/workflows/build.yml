@@ -1,0 +1,47 @@
+name: Build SDC-Konverter
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: SDC-Konverter-Windows
+            onefile: "--onefile"
+          - os: macos-latest
+            artifact: SDC-Konverter-Mac
+            onefile: ""
+    steps:
+      - name: Quellcode auschecken
+        uses: actions/checkout@v4
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Abhängigkeiten installieren
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+      - name: App bauen
+        run: >
+          pyinstaller --noconfirm --clean --windowed ${{ matrix.onefile }}
+          --name "SDC-Konverter"
+          --collect-all pdfplumber
+          --collect-all pdfminer
+          --collect-all webview
+          sdc_app.py
+      - name: Ergebnis hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 90
