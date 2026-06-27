@@ -313,6 +313,15 @@ def main():
                                    width=760, height=860, min_size=(680, 600))
     api.window = window
     webview.start()
+    # Fenster wurde geschlossen: Prozess sofort und sauber beenden.
+    # Verhindert den Crash beim Webview-Teardown (v.a. Windows/WebView2).
+    # Unbedenklich, da die CSV bereits beim Konvertieren geschrieben wurde.
+    try:
+        sys.stdout.flush()
+        sys.stderr.flush()
+    except Exception:
+        pass
+    os._exit(0)
 
 
 if __name__ == "__main__":
