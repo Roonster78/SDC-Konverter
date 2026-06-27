@@ -36,8 +36,7 @@ jobs:
           --name "SDC-Konverter"
           --collect-all pdfplumber
           --collect-all pdfminer
-          --collect-all webview
-          sdc_app.py
+          sdc_qt.py
       - name: Ergebnis hochladen
         uses: actions/upload-artifact@v4
         with:
