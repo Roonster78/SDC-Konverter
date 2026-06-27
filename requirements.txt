@@ -1,3 +1,2 @@
 pdfplumber>=0.11
-pywebview>=5
-pythonnet>=3.0; sys_platform == "win32"
+PySide6>=6.6
